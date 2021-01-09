@@ -1,28 +1,31 @@
-const secs = 3
+const duration = 3
+const amplitude = 0.125
+
 const context = new AudioContext()
-const bufferSize = context.sampleRate * secs
+const bufferSize = context.sampleRate * duration
 const buffer = context.createBuffer(1, 22050, context.sampleRate)
 
 let data = buffer.getChannelData(0)
 for (let i = 0; i < bufferSize; i++) {
-  data[i] = Math.random() * 2 - 1
+  data[i] = (Math.random() * 2 - 1) * amplitude
 }
 
-let noise = context.createBufferSource()
-noise.buffer = buffer
-noise.connect(context.destination)
-
-let playing = false
-const button = document.getElementById('toggle')
-if (button) {
-  button.onclick = toggle
-}
-
+let noise = null
 function toggle () {
-  playing = !playing
-  if (playing) {
+  if (!noise) {
+    noise = context.createBufferSource()
+    noise.buffer = buffer
+    noise.loop = true
+    noise.connect(context.destination)
     noise.start()
   } else {
     noise.stop()
+    noise = null
   }
+}
+
+const button = document.getElementById('toggle')
+if (button) {
+  button.onclick = toggle
+  button.innerText = noise ? 'Pause' : 'Play'
 }
