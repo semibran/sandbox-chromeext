@@ -26,6 +26,8 @@ function toggle () {
 
 const button = document.getElementById('toggle')
 if (button) {
-  button.onclick = toggle
-  button.innerText = noise ? 'Pause' : 'Play'
+  button.onclick = _ => {
+    toggle()
+    button.innerText = noise ? 'Pause' : 'Play'
+  }
 }
